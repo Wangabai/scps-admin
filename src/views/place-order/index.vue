@@ -245,6 +245,7 @@ const sure = async (formEl: FormInstance | undefined) => {
         isShow.value = true
         const order = data
         order.creationDate = order.creationDate.replace('T', ' ')
+        order.creationDate = order.creationDate.slice(0,order.creationDate.indexOf('.'))
         orderData.value = order
         active.value++
       }

@@ -4,22 +4,31 @@
  * @Date: 2022-04-26 11:36:45
 -->
 <template>
-  <el-form>
+  <el-form class="order">
+    <div class="title">
+      <el-form-item label="" style="text-align: center"><p>梓灿教育售货单</p></el-form-item>
+    </div>
+
     <el-form-item label="订单号：">{{ orderData.id }}</el-form-item>
-    <el-form-item label="下单时间：">{{ orderData.creationDate }}</el-form-item>
+    <el-form-item label="下单时间："
+      ><span style="font-size: 10px">{{ orderData.creationDate }}</span></el-form-item
+    >
     <el-form-item label="学生姓名：">{{ orderData.student.chineseName }}</el-form-item>
     <el-form-item label="电话：">{{ orderData.student.phoneNumber }}</el-form-item>
     <el-form-item label="备注：">{{ orderData.student.comment }}</el-form-item>
-    <el-form-item label="订单详情">
-      <el-table :data="orderData.items" border>
-        <el-table-column prop="productName" label="产品名称" />
-        <el-table-column prop="unitPrice" label="单价（元）" />
-        <el-table-column prop="quantity" label="数量" />
-        <el-table-column prop="itemPrice" label="单项总价（元）" />
-      </el-table>
-    </el-form-item>
-    <el-divider></el-divider>
+    <el-form-item label="订单详情："> </el-form-item>
+    <div class="order-item">
+      <p v-for="(item, index) in orderData.items">
+        {{
+          index + 1 + '. ' + item.productName + ' [x' + item.quantity + '] ' + item.unitPrice + '元'
+        }}
+      </p>
+    </div>
     <el-form-item label="总价">{{ orderData.totalPrice }}元</el-form-item>
+
+    <div class="footer">
+      <el-form-item label="" style="text-align: center"><p>################</p></el-form-item>
+    </div>
   </el-form>
 </template>
 
@@ -43,7 +52,7 @@ interface dataInterface {
   id: string
   creationDate: string
   student: studentInterface
-  items: itemInterface
+  items: itemInterface[]
   totalPrice: number
 }
 
@@ -61,12 +70,14 @@ let orderData = reactive<dataInterface>({
     comment: '',
     phoneNumber: ''
   },
-  items: {
-    productName: '',
-    unitPrice: 0,
-    quantity: 0,
-    itemPrice: 0
-  },
+  items: [
+    {
+      productName: '',
+      unitPrice: 0,
+      quantity: 0,
+      itemPrice: 0
+    }
+  ],
   totalPrice: 0
 })
 
@@ -81,7 +92,33 @@ watch(
 )
 </script>
 <style lang="scss" scoped>
-.order-table {
-  border: 1px solid #000;
+.order::v-deep {
+  margin-bottom: 50px;
+  padding: 10px 15px;
+  width: 200px;
+  .el-form-item {
+    align-items: center;
+    line-height: 20px;
+    margin-bottom: 0;
+    .el-form-item__label {
+      line-height: 20px;
+    }
+    .el-form-item__content {
+      line-height: 20px;
+    }
+  }
+  .order-item {
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    padding: 10px 0;
+  }
+  .title {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .footer {
+    text-align: center;
+    margin-top: 100px;
+  }
 }
 </style>
