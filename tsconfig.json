@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "useDefineForClassFields": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true, // 包含导入的模块。json的扩展
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["es2017", "dom"],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "/#/*": ["types/*"]
+    },
+    "suppressImplicitAnyIndexErrors": true, // 允许索引
+    // "noUnusedParameters": false // 不能有声明后未被使用的变量或参数
+    "types": ["node", "vite/client"],
+    "typeRoots": ["./node_modules/@types/", "./types"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "types/env.d.ts"],
+  "exclude": ["node_modules", "dist", "**/*.js"]
+}
