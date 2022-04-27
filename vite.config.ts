@@ -55,27 +55,22 @@ export default defineConfig({
       '/admin': {
         target: 'http://124.221.224.247:8081',
         changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/api/, '')
       },
       '/product': {
         target: 'http://124.221.224.247:8081',
         changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/api/, '')
       },
       '/student': {
         target: 'http://124.221.224.247:8081',
         changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/api/, '')
       },
       '/order': {
         target: 'http://124.221.224.247:8081',
         changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/api/, '')
       },
       '/placeOrder': {
         target: 'http://124.221.224.247:8081',
         changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/api/, '')
       },
     },
   },

@@ -44,7 +44,7 @@ import AddNum from './components/addNum.vue'
 const theadName = [
   { prop: 'productName', label: '产品名称' },
   { prop: 'inventory', label: '库存' },
-  { prop: 'price', label: '价格' },
+  { prop: 'price', label: '价格（元）' },
   { slot: 'opration' }
 ]
 const tableData = ref([])

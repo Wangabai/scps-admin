@@ -11,6 +11,7 @@ import HelpTip from './HelpTip.vue'
 import PageTitle from './PageTitle.vue'
 import InputComp from './InputComp.vue'
 import SelectComp from './SelectComp.vue'
+import TimePicker from './TimePicker.vue'
 
 export default {
   install(Vue: App) {
@@ -21,5 +22,6 @@ export default {
     Vue.component('PageTitle', PageTitle)
     Vue.component('InputComp', InputComp)
     Vue.component('SelectComp', SelectComp)
+    Vue.component('TimePicker', TimePicker)
   }
 }

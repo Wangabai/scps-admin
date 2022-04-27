@@ -6,15 +6,8 @@
 <template>
   <page-title> </page-title>
   <div class="search-box">
-    <input-comp
-      :isShowIcon="true"
-      title="学生"
-      placeholder="搜索订单"
-      :hval="keyword"
-      @blur="keywordBlur"
-      @enter="keywordBlur"
-      @clear="clearKeyword"
-    ></input-comp>
+    <select-comp title="学生" :hval="keyword" :data="studentList" @valueChange="keywordBlur">
+    </select-comp>
     <select-comp
       title="是否付款"
       :isShowAll="true"
@@ -23,6 +16,12 @@
       @valueChange="payValueChange"
     >
     </select-comp>
+    <time-picker
+      :isShowIcon="true"
+      title="下单时间"
+      :hval="time"
+      @change="dateChange"
+    ></time-picker>
   </div>
   <table-comp
     :data="tableData"
@@ -34,15 +33,29 @@
     @handleSizeChange="handleSizeChange"
     @handleCurrentChange="handleCurrentChange"
   >
+    <template v-slot:studentId>
+      <el-table-column label="学生姓名">
+        <template v-slot="{ row }">
+          <span>{{ row.student.chineseName }}</span>
+        </template>
+      </el-table-column>
+    </template>
+    <template v-slot:phoneNumber>
+      <el-table-column label="手机号">
+        <template v-slot="{ row }">
+          <span>{{ row.student.phoneNumber }}</span>
+        </template>
+      </el-table-column>
+    </template>
     <template v-slot:completeDate>
-      <el-table-column label="付款日期" fixed="right" width="140">
+      <el-table-column label="付款日期">
         <template v-slot="{ row }">
           <span>{{ row.completeDate ? row.completeDate : '暂未付款' }}</span>
         </template>
       </el-table-column>
     </template>
     <template v-slot:complete>
-      <el-table-column label="是否付款" fixed="right" width="140">
+      <el-table-column label="是否付款">
         <template v-slot="{ row }">
           <span>{{ row.complete === 0 ? '暂未付款' : '已付款' }}</span>
         </template>
@@ -53,22 +66,51 @@
 
 <script setup lang="ts">
 import { orderQuery } from '@/api/order'
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, Ref } from 'vue'
+import { studentQuery } from '@/api/student'
+import dayjs from 'dayjs'
 
-// 搜索框
-const keyword = ref('')
-const keywordBlur = (val: string) => {
+interface stduentListInterface {
+  id?: string
+  chineseName?: string
+}
+
+// 学生列表
+const studentList: Ref<Array<stduentListInterface>> = ref([])
+const getStudentList = async () => {
+  const { data, code } = await studentQuery({ page: 1, size: 9999 })
+  if (code === 200) {
+    studentList.value = data.students.map((item: any) => {
+      return {
+        value: item.id,
+        label: item.chineseName
+      }
+    })
+  }
+}
+
+// 学生 select选择框
+const keyword = ref<number>()
+const keywordBlur = (val: number) => {
   pageNum.value = 1
   keyword.value = val
   getOrderList()
 }
-const clearKeyword = () => {
+
+// 时间选择器
+const time = ref<string[]>()
+const startTime = ref()
+const endTime = ref()
+const dateChange = (val: any) => {
+  startTime.value = val.startTime
+  endTime.value = val.endTime
+  time.value = [startTime.value, endTime.value]
+  console.log(time.value)
   pageNum.value = 1
-  keyword.value = ''
   getOrderList()
 }
 
-// 是否付款
+// 是否付款 select选择框
 const payValue = ref<boolean | string | null>('')
 const options = ref([
   {
@@ -80,7 +122,7 @@ const options = ref([
     label: '未付款'
   }
 ])
-const payValueChange = (val: boolean | string | null) => {
+const payValueChange = (val: string) => {
   console.log(val)
   pageNum.value = 1
   payValue.value = val
@@ -88,11 +130,12 @@ const payValueChange = (val: boolean | string | null) => {
 }
 
 const theadName = [
-  { slot: 'studentId', label: '学生姓名' },
+  { slot: 'studentId' },
+  { slot: 'phoneNumber' },
   { slot: 'completeDate', label: '付款日期' },
   { prop: 'creationDate', label: '下单日期' },
-  { slot: 'complete', label: '是否付款' }
-  // { slot: 'opration' }
+  { slot: 'complete', label: '是否付款' },
+  { prop: 'totalPrice', label: '总金额（元）' }
 ]
 const tableData = ref([])
 const total = ref(0)
@@ -104,14 +147,18 @@ const getOrderList = async () => {
     page: pageNum.value,
     size: pageSize.value,
     studentId: keyword.value,
-    unPaid: payValue.value
+    paid: payValue.value,
+    startDate: startTime.value ? startTime.value + ' 00:00:00' : '',
+    endDate: endTime.value ? endTime.value + ' 23:59:59' : ''
   }
   const { code, data } = await orderQuery(parmas)
   if (code === 200) {
     const list = data.orders
     list.forEach((item: any) => {
-      item.creationDate = item.creationDate.replace('T', '')
-      item.completeDate = item.completeDate ? item.creationDate.replace('T', '') : null
+      item.creationDate = dayjs(item.creationDate).format('YYYY-MM-DD HH:MM:ss')
+      item.completeDate = item.completeDate
+        ? dayjs(item.completeDate).format('YYYY-MM-DD HH:MM:ss')
+        : item.completeDate
     })
     tableData.value = list
     total.value = data.total
@@ -119,6 +166,7 @@ const getOrderList = async () => {
   }
 }
 onBeforeMount(() => {
+  getStudentList()
   getOrderList()
 })
 

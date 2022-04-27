@@ -27,7 +27,7 @@
     <el-form-item label="总价">{{ orderData.totalPrice }}元</el-form-item>
 
     <div class="footer">
-      <el-form-item label="" style="text-align: center"><p>################</p></el-form-item>
+      <el-form-item label="" style="text-align: center"><p>__________________</p></el-form-item>
     </div>
   </el-form>
 </template>

@@ -41,10 +41,10 @@
       <div class="flex">
         <div>
           <el-form-item label="产品编码" prop="productId">
-            <el-input v-model="productId" @change="scanEnter" />
+            <el-input v-model="productId" @change="scanEnter" ref="inputProduct"/>
           </el-form-item>
           <el-form-item label="总价：" prop="productId">
-            <span>{{}}</span>
+            <span>{{ sumPrice }}元</span>
           </el-form-item>
         </div>
         <el-form-item label="产品详情" class="detail">
@@ -56,7 +56,11 @@
                   <el-form-item label="产品价格：">{{ item.price }}元</el-form-item>
                   <el-form-item label="产品库存：">{{ item.inventory }}</el-form-item>
                   <el-form-item label="数量：">
-                    <el-input-number v-model="item.needNum" :max="item.inventory" />
+                    <el-input-number
+                      v-model="item.needNum"
+                      :max="item.inventory"
+                      @change="changeNum"
+                    />
                   </el-form-item>
                 </div>
                 <el-icon :size="18" color="#7F88A4" style="margin-right: 10px">
@@ -72,7 +76,10 @@
     </div>
     <div v-if="active === 2">
       <order id="order" :data="orderData" />
-      <el-button type="primary" v-print="printObj">打 印</el-button>
+      <div class="flex space">
+        <el-button type="primary" v-print="printObj">打 印</el-button>
+        <el-button type="danger" @click="reset" class="float:right">重 置</el-button>
+      </div>
     </div>
   </el-form>
 </template>
@@ -83,9 +90,10 @@ import type { ElForm } from 'element-plus'
 import { placeOrder } from '@/api/order'
 import { studentQuery } from '@/api/student'
 import { productDetail } from '@/api/product'
-import { ElMessage } from 'element-plus'
 import { Remove } from '@element-plus/icons'
 import order from './components/orderDetail.vue'
+import dayjs from 'dayjs'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 type FormInstance = InstanceType<typeof ElForm>
 const formRef = ref<FormInstance>()
@@ -171,6 +179,9 @@ const checkStudent = (val: string) => {
   }
 }
 
+// 扫码产品总价
+const sumPrice = ref<number>(0)
+
 // 扫码 展示产品信息
 const productId = ref()
 const productList: Ref<Array<productListInterface>> = ref([])
@@ -192,13 +203,29 @@ const scanEnter = async () => {
       productList.value.push(item)
     }
   }
+  sumPrice.value = 0
+  productList.value.forEach((item: any) => {
+    sumPrice.value += item.price * item.needNum
+  })
   productId.value = ''
+}
+
+// 更改产品数量
+const changeNum = () => {
+  sumPrice.value = 0
+  productList.value.forEach((item: any) => {
+    sumPrice.value += item.price * item.needNum
+  })
 }
 
 // 步奏条
 const active = ref(0)
 // 下一步
 const next = () => {
+  if (!formData.studentId) {
+    ElMessage.error('请选择学生')
+    return
+  }
   if (active.value !== 0) return
   active.value++
 }
@@ -222,6 +249,7 @@ const printObj = {
   // 打印标题
   popTitle: '梓灿教育售货单'
 }
+
 // 确定 新增编辑产品
 const sure = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -231,6 +259,10 @@ const sure = async (formEl: FormInstance | undefined) => {
       quantity: productList.value[i].needNum
     }
     formData.items.push(item)
+  }
+  if (!formData.studentId) {
+    ElMessage.error('请选择学生')
+    return
   }
   if (formData.items.length === 0) {
     ElMessage.error('请添加产品')
@@ -244,18 +276,42 @@ const sure = async (formEl: FormInstance | undefined) => {
         ElMessage.success('新增成功')
         isShow.value = true
         const order = data
-        order.creationDate = order.creationDate.replace('T', ' ')
-        order.creationDate = order.creationDate.slice(0,order.creationDate.indexOf('.'))
-        orderData.value = order
+        ;(order.creationDate = dayjs(order.creationDate).format('YYYY-MM-DD HH:mm:ss')),
+          (orderData.value = order)
         active.value++
       }
     }
   })
 }
+
+// 重置表单 回到第一步
+const reset = async () => {
+  if (active.value !== 2) return
+  try {
+    await ElMessageBox.confirm('确认重置将无法打印当前订单，确认重置？', '警告', {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    active.value = 0
+    formData.studentId = ''
+    formData.items = []
+    productList.value = []
+    sumPrice.value = 0
+  } catch {
+    ElMessage({
+      type: 'info',
+      message: '取消重置'
+    })
+  }
+}
 </script>
 <style lang="scss" scoped>
 .flex {
   display: flex;
+}
+.space {
+  justify-content: space-between;
 }
 .icon-center {
   align-items: center;

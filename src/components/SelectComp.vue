@@ -84,10 +84,10 @@ watch(
 )
 
 const valueChange = () => {
-  emit('valueChange', value)
+  emit('valueChange', value.value)
 }
 const valueInput = () => {
-  emit('valueInput', value)
+  emit('valueInput', value.value)
 }
 </script>
 <style lang="scss" scoped>

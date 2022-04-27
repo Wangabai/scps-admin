@@ -14,7 +14,7 @@
           <el-form-item label="产品名称" prop="productName">
             <el-input v-model="formData.productName" />
           </el-form-item>
-          <el-form-item label="产品价格" prop="price">
+          <el-form-item label="产品价格（元）" prop="price">
             <el-input-number :precision="2" v-model="formData.price" />
           </el-form-item>
           <el-form-item label="产品库存" prop="inventory">
