@@ -26,8 +26,9 @@ export const timeoutReg = new RegExp('timeout', 'i')
 /**
  * 默认配置
  */
+console.log(import.meta.env.BASE_URL )
 export const defaultConfig: AxiosRequestConfig = {
-  baseURL: 'http://localhost:8081',
+  baseURL: import.meta.env.BASE_URL,
   timeout: 24000, //60秒超时
   headers: {
     Accept: 'application/json, text/plain, */*',
