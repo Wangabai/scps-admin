@@ -56,8 +56,8 @@ import type { ElForm } from 'element-plus'
 type FormInstance = InstanceType<typeof ElForm>
 
 const loginForm = ref({
-  name: 'admin',
-  password: 'admin'
+  name: '',
+  password: ''
 })
 
 const loginRules = ref({
