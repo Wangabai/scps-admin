@@ -155,7 +155,6 @@ watch(
 
 // 扫码
 const scanEnter = () => {
-  console.log('扫码')
 }
 
 const emit = defineEmits(['close'])

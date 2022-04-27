@@ -54,7 +54,6 @@ const value = ref<string[]>()
 watch(
   () => props.hval,
   (val) => {
-    console.log(val)
     value.value = val
   },
   { immediate: true }

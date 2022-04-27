@@ -71,7 +71,6 @@ const getStudentList = async () => {
       item.role = item.roles.split(',')
     })
     tableData.value = list
-    console.log(tableData.value)
     total.value = data.total
     pageCount.value = Math.ceil(total.value / pageSize.value)
   }

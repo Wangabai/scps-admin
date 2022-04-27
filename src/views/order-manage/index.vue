@@ -105,7 +105,6 @@ const dateChange = (val: any) => {
   startTime.value = val.startTime
   endTime.value = val.endTime
   time.value = [startTime.value, endTime.value]
-  console.log(time.value)
   pageNum.value = 1
   getOrderList()
 }
@@ -123,7 +122,6 @@ const options = ref([
   }
 ])
 const payValueChange = (val: string) => {
-  console.log(val)
   pageNum.value = 1
   payValue.value = val
   getOrderList()
