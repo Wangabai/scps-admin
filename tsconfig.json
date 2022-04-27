@@ -8,8 +8,9 @@
     "jsx": "preserve",
     "sourceMap": true,
     "resolveJsonModule": true, // 包含导入的模块。json的扩展
-    "isolatedModules": true,
+    "isolatedModules": false,
     "esModuleInterop": true,
+    "skipLibCheck": true, // 能解决Element 打包问题
     "lib": ["es2017", "dom"],
     "baseUrl": "./",
     "paths": {
@@ -21,6 +22,6 @@
     "types": ["node", "vite/client"],
     "typeRoots": ["./node_modules/@types/", "./types"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "types/env.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "types/*.d.ts"],
   "exclude": ["node_modules", "dist", "**/*.js"]
 }

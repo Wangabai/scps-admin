@@ -12,15 +12,11 @@
 </template>
 
 <script setup lang="ts">
-import {} from 'vue'
-defineProps({
-  title: {
-    type: String,
-    required: true
-  },
-  icon: {
-    type: String
-  }
-})
+interface Props {
+  title: string
+  icon: string
+}
+
+const props = withDefaults(defineProps<Props>(), {})
 </script>
 <style lang="scss" scoped></style>

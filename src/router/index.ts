@@ -69,7 +69,7 @@ export async function initRouter() {
 export function resetRouter() {
   router.getRoutes().forEach((route) => {
     const isAddRoute = privateRoutes.some((ele) => ele.name === route.name)
-    if (isAddRoute) {
+    if (isAddRoute && route.name) {
       router.removeRoute(route.name)
     }
   })

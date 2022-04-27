@@ -133,7 +133,7 @@ interface ColConfig {
   slot?: string
   maxLength?: number
   headTip?: string
-  prop?: string
+  prop: string
   isNum?: boolean
   label?: string
 }
@@ -143,7 +143,7 @@ interface Props {
   // 排序
   defaultSort?: object
   // 表头
-  colConfigs?: ColConfig[]
+  colConfigs: ColConfig[]
   // 表格数据
   data: []
   // 是否显示表头

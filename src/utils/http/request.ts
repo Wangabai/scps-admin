@@ -76,7 +76,7 @@ class EnclosureHttp {
           return config
         }
         const token = store.getters.token
-        if (token) config.headers['Authorization'] = `${token}`
+        if (token && config.headers) config.headers['Authorization'] = `${token}`
         return config
       },
       (error) => {
@@ -144,7 +144,7 @@ class EnclosureHttp {
             msg = errMsgMap[status] || error.response.statusText || msg
           }
           if (status === 401) {
-          removeItem('token')
+            removeItem('token')
             setTimeout(() => {
               router.push('/login')
             }, 1000)
@@ -176,7 +176,7 @@ class EnclosureHttp {
     return new Promise((resolve, reject) => {
       EnclosureHttp.axiosInstance
         .request(config)
-        .then((response: EnclosureHttpResoponse) => {
+        .then((response: any) => {
           resolve(response)
         })
         .catch((error: any) => {

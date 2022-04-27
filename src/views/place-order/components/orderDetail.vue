@@ -57,7 +57,7 @@ interface dataInterface {
 }
 
 interface Props {
-  data: dataInterface
+  data: object
 }
 
 const props = withDefaults(defineProps<Props>(), {})
@@ -83,7 +83,7 @@ let orderData = reactive<dataInterface>({
 
 watch(
   () => props.data,
-  (val) => {
+  (val: any) => {
     orderData = val
   },
   {
