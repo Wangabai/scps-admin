@@ -6,15 +6,14 @@
 <template>
   <div>
     <div class="logo-container">
-      <h1 class="logo-title" v-if="$store.getters.sidebarOpened">
-        梓灿教育售货系统
-      </h1>
-      <el-avatar
+      <h1 class="logo-title" v-if="$store.getters.sidebarOpened">梓灿教育售货系统</h1>
+      <!-- <el-avatar
         :size="logoHeight"
         shape="square"
-        src="/src/assets/000.png"
+        src="@/assets/000.png"
         v-else
-      />
+      /> -->
+      <img src="~@/assets/000.png" alt="" class="sidebar-logo" v-else />
     </div>
     <el-scrollbar>
       <SidebarMenu></SidebarMenu>
@@ -29,7 +28,7 @@ const logoHeight = 50
 </script>
 <style lang="scss" scoped>
 .logo-container {
-  height: v-bind(logoHeight) + "px";
+  height: v-bind(logoHeight) + 'px';
   padding: 7px 0 7px 0;
   display: flex;
   align-items: center;
@@ -41,6 +40,10 @@ const logoHeight = 50
     line-height: 50px;
     font-size: 16px;
     white-space: nowrap;
+  }
+  .sidebar-logo {
+    width: 54px;
+    margin-right: 0px;
   }
 }
 </style>
