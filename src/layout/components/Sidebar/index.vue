@@ -12,7 +12,7 @@
       <el-avatar
         :size="logoHeight"
         shape="square"
-        src="/src/assets/favicon.png"
+        src="/src/assets/000.png"
         v-else
       />
     </div>
