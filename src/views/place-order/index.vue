@@ -14,7 +14,7 @@
     <div v-if="active === 0">
       <div class="flex">
         <el-form-item label="学生" prop="studentId">
-          <el-select v-model="formData.studentId" placeholder="选择学生" @change="checkStudent">
+          <el-select filterable v-model="formData.studentId" placeholder="选择学生" @change="checkStudent">
             <el-option
               v-for="item in studentList"
               :key="item.id"
@@ -39,7 +39,7 @@
     </div>
     <div v-if="active === 1">
       <div class="flex">
-        <div>
+        <div class="input-product-id">
           <el-form-item label="产品编码" prop="productId">
             <el-input v-model="productId" @change="scanEnter" ref="inputProduct"/>
           </el-form-item>
@@ -54,11 +54,10 @@
                 <div>
                   <el-form-item label="产品名称：">{{ item.productName }}</el-form-item>
                   <el-form-item label="产品价格：">{{ item.price }}元</el-form-item>
-                  <el-form-item label="产品库存：">{{ item.inventory }}</el-form-item>
                   <el-form-item label="数量：">
                     <el-input-number
                       v-model="item.needNum"
-                      :max="item.inventory"
+                      min="0"
                       @change="changeNum"
                     />
                   </el-form-item>
@@ -318,5 +317,8 @@ const reset = async () => {
 }
 .detail {
   margin-left: 50px;
+}
+.input-product-id{
+  min-width: 40%;
 }
 </style>

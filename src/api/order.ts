@@ -24,5 +24,5 @@ export function pay(parmas: object): Promise<any> {
 
 // 下单
 export function placeOrder(parmas: object): Promise<any> {
-  return http.post('/placeOrder',parmas)
+  return http.post('/api/placeOrder',parmas)
 }

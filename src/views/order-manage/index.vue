@@ -6,7 +6,13 @@
 <template>
   <page-title> </page-title>
   <div class="search-box">
-    <select-comp title="学生" :hval="keyword" :data="studentList" @valueChange="keywordBlur">
+    <select-comp
+      title="学生"
+      :isfilterable="true"
+      :hval="keyword"
+      :data="studentList"
+      @valueChange="keywordBlur"
+    >
     </select-comp>
     <select-comp
       title="是否付款"

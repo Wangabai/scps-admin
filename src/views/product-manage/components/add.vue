@@ -17,7 +17,7 @@
           <el-form-item label="产品价格（元）" prop="price">
             <el-input-number :precision="2" v-model="formData.price" />
           </el-form-item>
-          <el-form-item label="产品库存" prop="inventory">
+          <el-form-item label="产品库存" prop="inventory" v-if="!disabled">
             <el-input-number v-model="formData.inventory" :disabled="disabled" />
           </el-form-item>
         </div>
@@ -220,7 +220,6 @@ const sure = async (formEl: FormInstance | undefined) => {
       } else {
         const pramas = {
           id: formData.id,
-          inventory: formData.inventory,
           price: formData.price,
           productName: formData.productName
         }

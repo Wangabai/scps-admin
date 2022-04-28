@@ -9,6 +9,17 @@
       <el-button type="primary" size="small" @click="addEdit(1)">新增产品</el-button>
     </template>
   </page-title>
+    <div class="search-box">
+    <input-comp
+      :isShowIcon="true"
+      title="搜索"
+      placeholder="扫描产品编码搜索产品"
+      :hval="productId"
+      @blur="productIdBlur"
+      @enter="productIdBlur"
+      @clear="clearProductId"
+    ></input-comp>
+  </div>
   <table-comp
     :data="tableData"
     :col-configs="theadName"
@@ -36,10 +47,27 @@
 </template>
 
 <script setup lang="ts">
-import { productQuery } from '@/api/product'
+import { productQuery,productDetail } from '@/api/product'
 import { ref, onBeforeMount } from 'vue'
 import Add from './components/add.vue'
 import AddNum from './components/addNum.vue'
+
+const productId = ref('')
+const productIdBlur = async(val: string) =>{
+  productId.value = val
+  const {data,code} = await productDetail(val)
+  if (code === 200) {
+    tableData.value = data.products
+    total.value = data.total
+    pageCount.value = Math.ceil(total.value / pageSize.value)
+  }
+}
+
+const clearProductId = ()=>{
+  productId.value = ''
+  pageNum.value = 1
+  getProductList()
+}
 
 const theadName = [
   { prop: 'productName', label: '产品名称' },

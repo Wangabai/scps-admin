@@ -52,23 +52,7 @@ export default defineConfig({
     // port: 3000,
     // base: "./ ", //生产环境路径
     proxy: {
-      '/admin': {
-        target: 'http://124.221.224.247:8081',
-        changeOrigin: true,
-      },
-      '/product': {
-        target: 'http://124.221.224.247:8081',
-        changeOrigin: true,
-      },
-      '/student': {
-        target: 'http://124.221.224.247:8081',
-        changeOrigin: true,
-      },
-      '/order': {
-        target: 'http://124.221.224.247:8081',
-        changeOrigin: true,
-      },
-      '/placeOrder': {
+      '/api': {
         target: 'http://124.221.224.247:8081',
         changeOrigin: true,
       },

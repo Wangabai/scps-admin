@@ -13,7 +13,7 @@
         <el-input v-model="formData.phoneNumber" autocomplete="off" />
       </el-form-item>
       <el-form-item label="备注">
-        <el-input v-model="formData.classType" autocomplete="off" />
+        <el-input v-model="formData.comment" autocomplete="off" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -35,13 +35,13 @@ type FormInstance = InstanceType<typeof ElForm>
 const formRef = ref<FormInstance>()
 const rules = ref({
   phoneNumber: [{ required: true, message: '请输入学生联系方式', trigger: 'blur' }],
-  classType: [{ required: true, message: '请输入课程信息', trigger: 'blur' }],
+  comment: [{ required: true, message: '请输入课程信息', trigger: 'blur' }],
   chineseName: [{ required: true, message: '请输入学生姓名', trigger: 'blur' }]
 })
 const formData = ref({
   id: '',
   phoneNumber: '',
-  classType: '',
+  comment: '',
   chineseName: ''
 })
 
@@ -71,7 +71,7 @@ watch(
       disabled.value = true
       formData.value.id = val.id
       formData.value.phoneNumber = val.phoneNumber
-      formData.value.classType = val.classType
+      formData.value.comment = val.comment
       formData.value.chineseName = val.chineseName
     }
   },
@@ -84,7 +84,7 @@ watch(
 const close = () => {
   formData.value.id = ''
   formData.value.phoneNumber = ''
-  formData.value.classType = ''
+  formData.value.comment = ''
   formData.value.chineseName = ''
   disabled.value = false
   emit('close')
@@ -99,7 +99,7 @@ const sure = async (formEl: FormInstance | undefined) => {
         const params = {
           chineseName: formData.value.chineseName,
           phoneNumber: formData.value.phoneNumber,
-          classType: formData.value.classType
+          comment: formData.value.comment
         }
         const { code } = await studentAdd(params)
         if (code === 200) {
@@ -109,9 +109,8 @@ const sure = async (formEl: FormInstance | undefined) => {
       } else {
         const params = {
           id: formData.value.id,
-          chineseName: formData.value.chineseName,
           phoneNumber: formData.value.phoneNumber,
-          classType: formData.value.classType
+          comment: formData.value.comment
         }
         const { code } = await studentUpdate(params)
         if (code === 200) {
