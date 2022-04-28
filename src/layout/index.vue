@@ -38,21 +38,7 @@ import {} from 'vue'
 
 .fixed-header {
   position: relative;
-  // top: 0;
-  // right: 0;
   z-index: 9;
   padding-left: 1p;
 }
-
-.hideSidebar .fixed-header {
-  width: calc(100% - #{$hideSideBarWidth});
-}
-
-// .app-main {
-//   min-height: calc(100vh - 64px);
-// }
-
-// .fixed-header + .app-main {
-//   padding-top: 84px;
-// }
 </style>

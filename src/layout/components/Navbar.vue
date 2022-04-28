@@ -48,7 +48,8 @@ const logout = () => {
 
     // hover 动画
     transition: background 0.5s;
-
+    -webkit-tap-highlight-color: transparent;
+    
     &:hover {
       background: rgba(0, 0, 0, 0.1);
     }
@@ -64,28 +65,6 @@ const logout = () => {
     float: right;
     padding-right: 16px;
     height: 64px;
-    ::v-deep .right-menu-item {
-      display: inline-block;
-      padding: 0 18px 0 0;
-      font-size: 24px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
-        cursor: pointer;
-      }
-    }
-    ::v-deep .avatar-container {
-      cursor: pointer;
-      .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
-        .el-avatar {
-          --el-avatar-background-color: none;
-          margin-right: 12px;
-        }
-      }
-    }
   }
 }
 </style>
