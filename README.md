@@ -3,7 +3,8 @@
  * @Description: 
  * @Date: 2022-04-01 10:10:14
 -->
-# Vue 3 + Typescript + Vite -- blog-admin
+# Vue 3 + Typescript + Vite
+# 梓灿教育售货平台
 
 
 ## 安装依赖
