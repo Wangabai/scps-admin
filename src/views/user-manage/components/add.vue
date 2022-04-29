@@ -7,12 +7,12 @@
   <el-dialog :title="props.title" :model-value="props.isShow" width="400px">
     <el-form ref="formRef" :model="formData" :rules="rules" label-width="80px">
       <el-form-item label="用户名" prop="name">
-        <el-input v-model="formData.name" autocomplete="off" />
+        <el-input v-model="formData.name" autocomplete="off" :disabled="disabled" />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="formData.password" autocomplete="off" />
       </el-form-item>
-      <el-form-item label="权限" v-if="!formData.id === 0">
+      <el-form-item label="权限" v-if="formData.id !== 0">
         <el-checkbox-group v-model="formData.roles">
           <el-checkbox label="order">订单列表</el-checkbox>
         </el-checkbox-group>
@@ -37,7 +37,7 @@ type FormInstance = InstanceType<typeof ElForm>
 const formRef = ref<FormInstance>()
 
 interface formDataInterface {
-  id: string
+  id: string | number
   name: string
   roles: Array<string>
   password: string
@@ -73,6 +73,7 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 
 // 监听是否编辑
+const disabled = ref(false)
 watch(
   () => props.data,
   (val) => {
@@ -81,6 +82,7 @@ watch(
       formData.name = val.name
       formData.roles = val.roles.split(',')
       formData.password = val.password
+      disabled.value = true
     }
   },
   {
@@ -94,6 +96,7 @@ const close = () => {
   formData.name = ''
   formData.roles = []
   formData.password = ''
+  disabled.value = false
   emit('close')
 }
 
@@ -116,7 +119,7 @@ const sure = async (formEl: FormInstance | undefined) => {
         }
       } else {
         const params =
-          formData.id === '0'
+          formData.id === 0
             ? {
                 id: formData.id,
                 password: formData.password

@@ -8,10 +8,14 @@
   <div class="search-box">
     <select-comp
       title="学生"
-      :isfilterable="true"
+      :isFilterable="true"
+      :isRemote="true"
+      :clearable="true"
       :hval="keyword"
       :data="studentList"
       @valueChange="keywordBlur"
+      @remoteMethod="remoteMethod"
+      :loading="loading"
     >
     </select-comp>
     <select-comp
@@ -83,15 +87,29 @@ interface stduentListInterface {
 
 // 学生列表
 const studentList: Ref<Array<stduentListInterface>> = ref([])
-const getStudentList = async () => {
-  const { data, code } = await studentQuery({ page: 1, size: 9999 })
+const getStudentList = async (query: string) => {
+  const { data, code } = await studentQuery({ page: 1, size: 10, filter: query })
   if (code === 200) {
     studentList.value = data.students.map((item: any) => {
       return {
         value: item.id,
-        label: item.chineseName
+        label: item.comment
+          ? `${item.chineseName}:${item.phoneNumber}(${item.comment})`
+          : `${item.chineseName}:${item.phoneNumber}`
       }
     })
+  }
+}
+
+// 远程搜索
+const loading = ref(false)
+const remoteMethod = async (query: string) => {
+  if (query) {
+    loading.value = true
+    await getStudentList(query)
+    loading.value = false
+  } else {
+    options.value = []
   }
 }
 
@@ -136,9 +154,9 @@ const payValueChange = (val: string) => {
 const theadName = [
   { slot: 'studentId' },
   { slot: 'phoneNumber' },
-  { slot: 'completeDate', label: '付款日期' },
   { prop: 'creationDate', label: '下单日期' },
   { slot: 'complete', label: '是否付款' },
+  { slot: 'completeDate', label: '付款日期' },
   { prop: 'totalPrice', label: '总金额（元）' }
 ]
 const tableData = ref([])
@@ -170,7 +188,6 @@ const getOrderList = async () => {
   }
 }
 onBeforeMount(() => {
-  getStudentList()
   getOrderList()
 })
 

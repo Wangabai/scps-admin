@@ -148,6 +148,7 @@ const close = () => {
     orders: [],
     phoneNumber: ''
   }
+  noPaySum.value = 0
   checkList.value = []
   emit('close')
 }

@@ -13,13 +13,14 @@
       class="select-comp-select"
       :multiple="props.multiple"
       collapse-tags
-      :filterable="props.isfilterable"
+      :filterable="props.isFilterable"
+      :remote="props.isRemote"
       :clearable="props.clearable"
       :placeholder="props.placeholder"
       :size="props.size"
       :disabled="props.disabled"
+      :remote-method="remoteMethod"
       @change="valueChange"
-      @input="valueInput"
       :isShowAll="props.isShowAll"
     >
       <el-option v-if="props.isShowAll" key="" value="" :label="props.allLabel"></el-option>
@@ -42,7 +43,9 @@ interface data {
 
 interface Props {
   // 是否支持模糊查询
-  isfilterable?: boolean
+  isFilterable?: boolean
+  // 远程搜索
+  isRemote?: boolean
   multiple?: boolean
   disabled?: boolean
   isShowAll?: boolean
@@ -63,15 +66,15 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  isfilterable: false,
+  isFilterable: false,
+  isRemote: false,
   multiple: false,
   disabled: false,
   isShowAll: false,
   clearable: false,
   allLabel: '全部'
 })
-
-const emit = defineEmits(['valueChange', 'valueInput'])
+const emit = defineEmits(['valueChange', 'remoteMethod'])
 
 const value = ref<string | number | []>()
 
@@ -86,8 +89,9 @@ watch(
 const valueChange = () => {
   emit('valueChange', value.value)
 }
-const valueInput = () => {
-  emit('valueInput', value.value)
+
+const remoteMethod = (query: string) => {
+  emit('remoteMethod', query)
 }
 </script>
 <style lang="scss" scoped>

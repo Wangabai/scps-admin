@@ -138,16 +138,20 @@ class EnclosureHttp {
         if (error.response && error.response.status) {
           const status = error.response.status
           const data = error.response.data
+          const response = data.code
           if (data && data.code) {
             msg = data.message || msg
           } else {
             msg = errMsgMap[status] || error.response.statusText || msg
           }
-          if (status === 401) {
-            removeItem('token')
+          if (response === 401) {
+            console.log(response === 401)
+            ElMessage.error('登录超时，请重新登录')
+            console.log(msg)
             setTimeout(() => {
-              router.push('/login')
-            }, 1000)
+              store.dispatch('user/logout')
+            }, 100)
+            return
           } else if (timeoutReg.test(error.message)) {
             msg = '网络超时'
             ElMessage.error(msg)

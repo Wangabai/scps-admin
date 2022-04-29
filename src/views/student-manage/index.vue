@@ -89,8 +89,8 @@ const clearstudentName = () => {
 // 表头
 const theadName = [
   { prop: 'chineseName', label: '学生姓名' },
-  { prop: 'classType', label: '备注' }, // 备注 ｜ 课程
   { prop: 'phoneNumber', label: '手机号码' },
+  { prop: 'comment', label: '备注' }, // 备注
   { slot: 'opration' }
 ]
 

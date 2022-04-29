@@ -14,6 +14,7 @@ const whiteList = ['/login']
  */
 router.beforeEach(async (to, from, next) => {
   let path
+  console.log(store.getters.token)
   // 存在 token ，进入主页
   if (store.getters.token) {
     const addRoutes = store.state.user.addRoutes

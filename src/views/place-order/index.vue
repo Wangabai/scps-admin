@@ -5,7 +5,7 @@
 -->
 <template>
   <page-title currentTitle="新增订单"> </page-title>
-  <el-form ref="formRef" :model="formData" :rules="rules" label-width="80px" class="add-dialog">
+  <el-form ref="formRef" @submit.enter.prevent  :model="formData" :rules="rules" label-width="80px" class="add-dialog">
     <el-steps :active="active" finish-status="success">
       <el-step title="选择学生"> </el-step>
       <el-step title="选择产品"> </el-step>
@@ -14,11 +14,20 @@
     <div v-if="active === 0">
       <div class="flex">
         <el-form-item label="学生" prop="studentId">
-          <el-select filterable v-model="formData.studentId" placeholder="选择学生" @change="checkStudent">
+          <el-select
+            filterable
+            remote
+            clearable
+            :remote-method="remoteMethod"
+            :loading="loading"
+            v-model="formData.studentId"
+            placeholder="选择学生"
+            @change="checkStudent"
+          >
             <el-option
               v-for="item in studentList"
               :key="item.id"
-              :label="item.chineseName"
+              :label="item.label"
               :value="item.id"
             />
           </el-select>
@@ -41,7 +50,7 @@
       <div class="flex">
         <div class="input-product-id">
           <el-form-item label="产品编码" prop="productId">
-            <el-input v-model="productId" @change="scanEnter" ref="inputProduct"/>
+            <el-input v-model="productId" @change="scanEnter" ref="inputProduct" />
           </el-form-item>
           <el-form-item label="总价：" prop="productId">
             <span>{{ sumPrice }}元</span>
@@ -49,17 +58,13 @@
         </div>
         <el-form-item label="产品详情" class="detail">
           <el-form label-width="100px" label-position="right">
-            <div v-for="(item, index) in productList" :key="item.id">
+            <div v-for="(item, index) in productList" :key="item.id" class="product-item">
               <div class="flex icon-center">
                 <div>
                   <el-form-item label="产品名称：">{{ item.productName }}</el-form-item>
                   <el-form-item label="产品价格：">{{ item.price }}元</el-form-item>
                   <el-form-item label="数量：">
-                    <el-input-number
-                      v-model="item.needNum"
-                      min="0"
-                      @change="changeNum"
-                    />
+                    <el-input-number v-model="item.needNum" :min=1 @change="changeNum" />
                   </el-form-item>
                 </div>
                 <el-icon :size="18" color="#7F88A4" style="margin-right: 10px">
@@ -121,6 +126,7 @@ interface formDataInterface {
 interface stduentListInterface {
   id?: string
   chineseName?: string
+  label?: string
 }
 
 interface stduentDetailInterface {
@@ -159,13 +165,30 @@ const formData: formDataInterface = reactive({
 
 // 学生列表
 const studentList: Ref<Array<stduentListInterface>> = ref([])
-const getStudentList = async () => {
-  const { data, code } = await studentQuery({ page: 1, size: 9999 })
-  if (code === 200) studentList.value = data.students
+const getStudentList = async (query: string) => {
+  const { data, code } = await studentQuery({ page: 1, size: 10, filter: query })
+  if (code === 200) {
+    const list = data.students
+    list.forEach((item: any) => {
+      item.label = item.comment
+        ? `${item.chineseName}:${item.phoneNumber}(${item.comment})`
+        : `${item.chineseName}:${item.phoneNumber}`
+    })
+    studentList.value = list
+  }
 }
-onBeforeMount(() => {
-  getStudentList()
-})
+
+// 远程搜索学生
+const loading = ref(false)
+const remoteMethod = async (query: string) => {
+  if (query) {
+    loading.value = true
+    await getStudentList(query)
+    loading.value = false
+  } else {
+    studentList.value = []
+  }
+}
 
 // 选择学生展示学生详情
 const studentDetail = ref<stduentDetailInterface>()
@@ -318,7 +341,11 @@ const reset = async () => {
 .detail {
   margin-left: 50px;
 }
-.input-product-id{
+.input-product-id {
   min-width: 40%;
+}
+.product-item {
+  padding-bottom: 5px;
+  border-bottom: 1px solid #000;
 }
 </style>
