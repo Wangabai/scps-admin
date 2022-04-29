@@ -12,7 +12,7 @@
       <el-form-item label="密码" prop="password">
         <el-input v-model="formData.password" autocomplete="off" />
       </el-form-item>
-      <el-form-item label="权限">
+      <el-form-item label="权限" v-if="!formData.id === 0">
         <el-checkbox-group v-model="formData.roles">
           <el-checkbox label="order">订单列表</el-checkbox>
         </el-checkbox-group>
@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, Ref, ref, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import type { ElForm } from 'element-plus'
 import { addUser, updateUser } from '@/api/user'
 import { ElMessage } from 'element-plus'
@@ -115,11 +115,17 @@ const sure = async (formEl: FormInstance | undefined) => {
           close()
         }
       } else {
-        const params = {
-          id: formData.id,
-          password: formData.password,
-          roles: order ? 'order,placeorder,student,product' : 'placeorder,student,product'
-        }
+        const params =
+          formData.id === '0'
+            ? {
+                id: formData.id,
+                password: formData.password
+              }
+            : {
+                id: formData.id,
+                password: formData.password,
+                roles: order ? 'order,placeorder,student,product' : 'placeorder,student,product'
+              }
         const { code } = await updateUser(params)
         if (code === 200) {
           ElMessage.success('编辑成功')
