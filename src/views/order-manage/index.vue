@@ -109,7 +109,7 @@ const remoteMethod = async (query: string) => {
     await getStudentList(query)
     loading.value = false
   } else {
-    options.value = []
+    studentList.value = []
   }
 }
 

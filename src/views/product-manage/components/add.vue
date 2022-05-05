@@ -5,7 +5,7 @@
 -->
 <template>
   <el-dialog :title="props.title" :model-value="props.isShow" width="500px">
-    <el-form ref="formRef" :model="formData" :rules="rules" label-width="80px" class="add-dialog">
+    <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" class="add-dialog">
       <div class="flex">
         <div class="add-item">
           <el-form-item label="产品编码" prop="id">
@@ -249,7 +249,7 @@ const sure = async (formEl: FormInstance | undefined) => {
 .el-form-item::v-deep {
   width: 390px;
   .el-input-number {
-    width: 310px;
+    width: 270px;
   }
 }
 </style>

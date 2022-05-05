@@ -14,7 +14,6 @@ const whiteList = ['/login']
  */
 router.beforeEach(async (to, from, next) => {
   let path
-  console.log(store.getters.token)
   // 存在 token ，进入主页
   if (store.getters.token) {
     const addRoutes = store.state.user.addRoutes
@@ -45,7 +44,7 @@ router.beforeEach(async (to, from, next) => {
   } else {
     // 没有token的情况下，可以进入白名单
     if (whiteList.indexOf(to.path) > -1) {
-      next(path)
+      next()
     } else {
       next('/login')
     }

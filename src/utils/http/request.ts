@@ -145,12 +145,9 @@ class EnclosureHttp {
             msg = errMsgMap[status] || error.response.statusText || msg
           }
           if (response === 401) {
-            console.log(response === 401)
             ElMessage.error('登录超时，请重新登录')
-            console.log(msg)
-            setTimeout(() => {
-              store.dispatch('user/logout')
-            }, 100)
+            store.dispatch('user/logout')
+            router.push('/login')
             return
           } else if (timeoutReg.test(error.message)) {
             msg = '网络超时'

@@ -3,7 +3,7 @@
  * @Description: 路由入口
  * @Date: 2022-04-01 10:15:16
  */
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import layout from '@/layout/index.vue'
 import ProductManageRouter from './modules/ProductManageRouter'
 import StudentManageRouter from './modules/StudentManageRouter'
@@ -76,7 +76,7 @@ export function resetRouter() {
 }
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: publicRoutes //[...publicRoutes, ...privateRoutes]
 })
 

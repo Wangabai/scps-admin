@@ -44,9 +44,11 @@
             <el-table-column prop="totalPrice" label="总价（元）" />
           </el-table>
         </el-form-item>
-        <el-form-item label="总计未付款:" v-if="tableData.orders">{{ noPaySum }}元</el-form-item>
+        <el-form-item label="总计未付款:">{{ noPaySum }}元</el-form-item>
       </el-form>
-      <el-button type="primary" @click="payOrder">付款</el-button>
+      <el-button type="primary" @click="payOrder" :disabled="tableData.orders.length === 0"
+        >付款</el-button
+      >
     </el-drawer>
   </div>
 </template>

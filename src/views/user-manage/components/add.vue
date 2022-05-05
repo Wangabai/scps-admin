@@ -110,7 +110,7 @@ const sure = async (formEl: FormInstance | undefined) => {
         const params = {
           password: formData.password,
           name: formData.name,
-          roles: order ? 'order,placeorder,student,product' : 'placeorder,student,product'
+          roles: order ? 'placeOrder,product,student,order' : 'placeOrder,product,student'
         }
         const { code } = await addUser(params)
         if (code === 200) {
@@ -127,7 +127,7 @@ const sure = async (formEl: FormInstance | undefined) => {
             : {
                 id: formData.id,
                 password: formData.password,
-                roles: order ? 'order,placeorder,student,product' : 'placeorder,student,product'
+                roles: order ? 'placeOrder,product,student,order' : 'placeOrder,product,student'
               }
         const { code } = await updateUser(params)
         if (code === 200) {
