@@ -5,7 +5,14 @@
 -->
 <template>
   <page-title currentTitle="新增订单"> </page-title>
-  <el-form ref="formRef" @submit.enter.prevent  :model="formData" :rules="rules" label-width="80px" class="add-dialog">
+  <el-form
+    ref="formRef"
+    @submit.enter.prevent
+    :model="formData"
+    :rules="rules"
+    label-width="80px"
+    class="add-dialog"
+  >
     <el-steps :active="active" finish-status="success">
       <el-step title="选择学生"> </el-step>
       <el-step title="选择产品"> </el-step>
@@ -64,7 +71,7 @@
                   <el-form-item label="产品名称：">{{ item.productName }}</el-form-item>
                   <el-form-item label="产品价格：">{{ item.price }}元</el-form-item>
                   <el-form-item label="数量：">
-                    <el-input-number v-model="item.needNum" :min=1 @change="changeNum" />
+                    <el-input-number v-model="item.needNum" :min="1" @change="changeNum" />
                   </el-form-item>
                 </div>
                 <el-icon :size="18" color="#7F88A4" style="margin-right: 10px">
@@ -298,8 +305,8 @@ const sure = async (formEl: FormInstance | undefined) => {
         ElMessage.success('新增成功')
         isShow.value = true
         const order = data
-        ;(order.creationDate = dayjs(order.creationDate).format('YYYY-MM-DD HH:mm:ss')),
-          (orderData.value = order)
+        order.creationDate = dayjs(order.creationDate).format('YYYY-MM-DD HH:mm:ss')
+        orderData.value = order
         active.value++
       }
     }

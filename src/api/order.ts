@@ -12,7 +12,7 @@ export function orderQuery(parmas: object): Promise<any> {
 }
 
 // 获取订单详情
-export function productDetail(parmas: string): Promise<any> {
+export function orderDetail(parmas: string): Promise<any> {
   return http.get(`${ORDER_SERVER}/query/${parmas}`)
 }
 

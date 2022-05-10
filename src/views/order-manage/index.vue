@@ -13,9 +13,9 @@
       :clearable="true"
       :hval="keyword"
       :data="studentList"
-      @valueChange="keywordBlur"
-      @remoteMethod="remoteMethod"
       :loading="loading"
+      @remoteMethod="remoteMethod"
+      @valueChange="keywordBlur"
     >
     </select-comp>
     <select-comp
@@ -32,17 +32,11 @@
       :hval="time"
       @change="dateChange"
     ></time-picker>
+
+    <btn-comp class="btn" size="medium" @click="selectData">查询</btn-comp>
+    <btn-comp btnType="warning" class="btn" size="medium" plain @click="clear">重置</btn-comp>
   </div>
-  <table-comp
-    :data="tableData"
-    :col-configs="theadName"
-    :isShowCheckBox="false"
-    :total="total"
-    :pageCount="pageCount"
-    :currentPage="pageNum"
-    @handleSizeChange="handleSizeChange"
-    @handleCurrentChange="handleCurrentChange"
-  >
+  <table-comp :data="tableData" :col-configs="theadName" :isShowCheckBox="false">
     <template v-slot:studentId>
       <el-table-column label="学生姓名">
         <template v-slot="{ row }">
@@ -71,18 +65,45 @@
         </template>
       </el-table-column>
     </template>
+    <template v-slot:opration>
+      <el-table-column label="操作" fixed="right" width="140">
+        <template v-slot="{ row }">
+          <div class="opration_row">
+            <span @click="detail(row.id)">详情</span>
+          </div>
+        </template>
+      </el-table-column>
+    </template>
   </table-comp>
+  <btn-comp class="btn" size="medium" @click="printOrder" style="margin-top: 5px"
+    >打印订单</btn-comp
+  >
+
+  <OrderDetail :id="orderId" :isShow="orderShow" @close="orderClose" />
+  <PrintOrder :data="printData" :isShow="printShow" @close="orderClose" />
 </template>
 
 <script setup lang="ts">
 import { orderQuery } from '@/api/order'
-import { ref, onBeforeMount, Ref } from 'vue'
+import { ref, Ref } from 'vue'
 import { studentQuery } from '@/api/student'
 import dayjs from 'dayjs'
+import OrderDetail from '@/views/components/orderDetail.vue'
+import PrintOrder from './components/printOrder.vue'
+import { ElMessage } from 'element-plus'
 
 interface stduentListInterface {
   id?: string
   chineseName?: string
+}
+
+interface printData {
+  student?: {
+    chineseName?: string
+  }
+  id?: string
+  creationDate?: string
+  totalPrice?: string
 }
 
 // 学生列表
@@ -114,11 +135,11 @@ const remoteMethod = async (query: string) => {
 }
 
 // 学生 select选择框
-const keyword = ref<number>()
+const keyword = ref<number | null>()
 const keywordBlur = (val: number) => {
   pageNum.value = 1
   keyword.value = val
-  getOrderList()
+  // getOrderList()
 }
 
 // 时间选择器
@@ -130,7 +151,7 @@ const dateChange = (val: any) => {
   endTime.value = val.endTime
   time.value = [startTime.value, endTime.value]
   pageNum.value = 1
-  getOrderList()
+  // getOrderList()
 }
 
 // 是否付款 select选择框
@@ -148,7 +169,7 @@ const options = ref([
 const payValueChange = (val: string) => {
   pageNum.value = 1
   payValue.value = val
-  getOrderList()
+  // getOrderList()
 }
 
 const theadName = [
@@ -157,7 +178,8 @@ const theadName = [
   { prop: 'creationDate', label: '下单日期' },
   { slot: 'complete', label: '是否付款' },
   { slot: 'completeDate', label: '付款日期' },
-  { prop: 'totalPrice', label: '总金额（元）' }
+  { prop: 'totalPrice', label: '总金额（元）' },
+  { slot: 'opration' }
 ]
 const tableData = ref([])
 const total = ref(0)
@@ -166,8 +188,8 @@ const pageNum = ref(1)
 const pageSize = ref(10)
 const getOrderList = async () => {
   const parmas = {
-    page: pageNum.value,
-    size: pageSize.value,
+    page: 1,
+    size: 9999,
     studentId: keyword.value,
     paid: payValue.value,
     startDate: startTime.value ? startTime.value + ' 00:00:00' : '',
@@ -187,18 +209,55 @@ const getOrderList = async () => {
     pageCount.value = Math.ceil(total.value / pageSize.value)
   }
 }
-onBeforeMount(() => {
-  getOrderList()
-})
 
-const handleSizeChange = (val: number) => {
-  pageSize.value = val
+// 查询订单
+const selectData = () => {
   getOrderList()
 }
+// 清空筛选项
+const clear = () => {
+  keyword.value = null
+  payValue.value = ''
+  startTime.value = ''
+  endTime.value = ''
+  time.value = ['', '']
+  tableData.value = []
+}
 
-const handleCurrentChange = (val: number) => {
-  pageNum.value = val
-  getOrderList()
+// 订单详情
+const orderId = ref('')
+const orderShow = ref(false)
+const detail = (id: string) => {
+  orderId.value = id
+  orderShow.value = true
+}
+
+const orderClose = () => {
+  orderId.value = ''
+  orderShow.value = false
+  printShow.value = false
+  printData.value = []
+}
+
+// 打印订单
+const printShow = ref(false)
+const printData = ref<printData[]>([])
+const printOrder = () => {
+  if (tableData.value.length > 0) {
+    printShow.value = true
+    printData.value = tableData.value
+  } else {
+    console.log('触发')
+    ElMessage({
+      type: 'warning',
+      message: '没有订单'
+    })
+  }
 }
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.btn {
+  margin-right: 16px;
+  margin-bottom: 10px;
+}
+</style>

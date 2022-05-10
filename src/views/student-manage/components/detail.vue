@@ -42,6 +42,13 @@
               </template>
             </el-table-column>
             <el-table-column prop="totalPrice" label="总价（元）" />
+            <el-table-column label="付款">
+              <template #default="scope">
+                <div class="opration_row">
+                  <span @click="detail(scope.row.id)">详情</span>
+                </div>
+              </template>
+            </el-table-column>
           </el-table>
         </el-form-item>
         <el-form-item label="总计未付款:">{{ noPaySum }}元</el-form-item>
@@ -50,6 +57,7 @@
         >付款</el-button
       >
     </el-drawer>
+    <OrderDetail :id="orderId" :isShow="orderShow" @close="orderClose"></OrderDetail>
   </div>
 </template>
 
@@ -59,6 +67,7 @@ import { studentDetail } from '@/api/student'
 import { pay } from '@/api/order'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import OrderDetail from '@/views/components/orderDetail.vue'
 
 // 传参
 const props = defineProps({
@@ -90,19 +99,25 @@ const noPaySum = ref(0)
 // 监听是否传过来id
 watch(
   () => props.id,
-  async (val) => {
+  (val) => {
     if (props.isShow) {
-      const { code, data } = await studentDetail(props.id)
-      if (code === 200) tableData.value = data
-      const order = tableData.value.orders
-      if (order) {
-        order.forEach((item: any) => {
-          noPaySum.value += item.totalPrice
-        })
-      }
+      getStudentDetail()
     }
   }
 )
+
+// 获取表单列表
+const getStudentDetail = async () => {
+  const { code, data } = await studentDetail(props.id)
+  console.log(code)
+  if (code === 200) tableData.value = data
+  const order = tableData.value.orders
+  if (order) {
+    order.forEach((item: any) => {
+      noPaySum.value += item.totalPrice
+    })
+  }
+}
 
 // 多选付款
 const checkList = ref<string[]>()
@@ -138,6 +153,21 @@ const payOrder = async () => {
       message: '取消付款'
     })
   }
+}
+
+// 订单详情
+const orderId = ref('')
+const orderShow = ref(false)
+const detail = (id: string) => {
+  console.log('详情', id)
+  orderId.value = id
+  orderShow.value = true
+}
+
+const orderClose = () => {
+  orderId.value = ''
+  orderShow.value = false
+  getStudentDetail()
 }
 
 // 关闭

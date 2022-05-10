@@ -53,7 +53,7 @@ export default defineConfig({
     // base: "./ ", //生产环境路径
     proxy: {
       '/api': {
-        target: 'http://localhost:8081', // 'http://localhost:8081' // http://124.221.224.247:8081
+        target: 'http://124.221.224.247:8081', // 'http://localhost:8081' // http://124.221.224.247:8081
         changeOrigin: true
       }
     }
