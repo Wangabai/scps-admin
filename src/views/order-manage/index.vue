@@ -247,7 +247,6 @@ const printOrder = () => {
     printShow.value = true
     printData.value = tableData.value
   } else {
-    console.log('触发')
     ElMessage({
       type: 'warning',
       message: '没有订单'

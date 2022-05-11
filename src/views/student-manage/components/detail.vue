@@ -42,7 +42,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="totalPrice" label="总价（元）" />
-            <el-table-column label="付款">
+            <el-table-column label="操作">
               <template #default="scope">
                 <div class="opration_row">
                   <span @click="detail(scope.row.id)">详情</span>
@@ -53,11 +53,15 @@
         </el-form-item>
         <el-form-item label="总计未付款:">{{ noPaySum }}元</el-form-item>
       </el-form>
-      <el-button type="primary" @click="payOrder" :disabled="tableData.orders.length === 0"
+      <el-button type="primary" @click="payOrder" v-if="tableData.orders.length !== 0"
         >付款</el-button
       >
+      <el-button type="primary" @click="printOrder" v-if="tableData.orders.length !== 0"
+        >打印</el-button
+      >
     </el-drawer>
-    <OrderDetail :id="orderId" :isShow="orderShow" @close="orderClose"></OrderDetail>
+    <OrderDetail :id="orderId" :isShow="orderShow" @close="orderClose" />
+    <PrintOrder :id="studentId" :isShow="printShow" @close="orderClose" />
   </div>
 </template>
 
@@ -68,6 +72,7 @@ import { pay } from '@/api/order'
 import dayjs from 'dayjs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import OrderDetail from '@/views/components/orderDetail.vue'
+import PrintOrder from './printOrder.vue'
 
 // 传参
 const props = defineProps({
@@ -109,7 +114,6 @@ watch(
 // 获取表单列表
 const getStudentDetail = async () => {
   const { code, data } = await studentDetail(props.id)
-  console.log(code)
   if (code === 200) tableData.value = data
   const order = tableData.value.orders
   if (order) {
@@ -159,7 +163,6 @@ const payOrder = async () => {
 const orderId = ref('')
 const orderShow = ref(false)
 const detail = (id: string) => {
-  console.log('详情', id)
   orderId.value = id
   orderShow.value = true
 }
@@ -167,6 +170,8 @@ const detail = (id: string) => {
 const orderClose = () => {
   orderId.value = ''
   orderShow.value = false
+  studentId.value = ''
+  printShow.value = false
   getStudentDetail()
 }
 
@@ -183,6 +188,14 @@ const close = () => {
   noPaySum.value = 0
   checkList.value = []
   emit('close')
+}
+
+// 打印所有的订单
+const studentId = ref('')
+const printShow = ref(false)
+const printOrder = () => {
+  printShow.value = true
+  studentId.value = props.id
 }
 </script>
 <style lang="scss" scoped>

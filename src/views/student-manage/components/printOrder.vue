@@ -5,30 +5,33 @@
         <div class="title">
           <el-form-item label="" style="text-align: center"><p>梓灿教育售货单</p></el-form-item>
         </div>
-        <el-form-item label="订单号：">{{ orderData.id }}</el-form-item>
-        <el-form-item label="下单时间："
-          ><span style="font-size: 10px">{{ orderData.creationDate }}</span></el-form-item
-        >
-        <el-form-item label="学生姓名：">{{ student.chineseName }}</el-form-item>
-        <el-form-item label="电话：">{{ student.phoneNumber }}</el-form-item>
-        <el-form-item label="备注：">{{ student.comment }}</el-form-item>
-        <el-form-item label="订单详情："> </el-form-item>
-        <div class="order-item">
-          <p v-for="(item, index) in orderData?.items">
-            {{
-              index +
-              1 +
-              '. ' +
-              item.productName +
-              ' [x' +
-              item.quantity +
-              '] ' +
-              item.unitPrice +
-              '元'
-            }}
-          </p>
+        <div v-for="(order, index) in orderData" :key="index">
+          <el-form-item label="订单号：">{{ order.id }}</el-form-item>
+          <el-form-item label="下单时间："
+            ><span style="font-size: 10px">{{ order.creationDate }}</span></el-form-item
+          >
+          <el-form-item label="学生姓名：">{{ student.chineseName }}</el-form-item>
+          <el-form-item label="电话：">{{ student.phoneNumber }}</el-form-item>
+          <el-form-item label="备注：">{{ student.comment }}</el-form-item>
+          <el-form-item label="订单详情："> </el-form-item>
+          <div class="order-item">
+            <p v-for="(item, index) in order.items">
+              {{
+                index +
+                1 +
+                '. ' +
+                item.productName +
+                ' [x' +
+                item.quantity +
+                '] ' +
+                item.unitPrice +
+                '元'
+              }}
+            </p>
+          </div>
+          <el-form-item label="总价">{{ order.totalPrice }}元</el-form-item>
         </div>
-        <el-form-item label="总价">{{ orderData.totalPrice }}元</el-form-item>
+
         <div class="footer">
           <el-form-item label="" style="text-align: center"><p>__________________</p></el-form-item>
         </div>
@@ -45,8 +48,8 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { dataInterface } from './interface/orderItem'
-import { orderDetail } from '@/api/order'
+import { dataInterface } from '@/views/components/interface/orderItem'
+import { studentDetail } from '@/api/student'
 import dayjs from 'dayjs'
 
 interface Props {
@@ -62,30 +65,22 @@ const student = ref({
   phoneNumber: '',
   comment: ''
 })
-const orderData = ref<dataInterface>({
-  id: '',
-  creationDate: '',
-  items: [
-    {
-      productName: '',
-      unitPrice: 0,
-      quantity: 0,
-      itemPrice: 0
-    }
-  ],
-  totalPrice: 0
-})
+const orderData = ref<dataInterface[]>([])
 
 watch(
   () => props.isShow,
   async (val: boolean) => {
     if (val && props.id) {
-      const { code, data } = await orderDetail(props.id)
+      const { code, data } = await studentDetail(props.id)
       if (code === 200) {
-        const order = data
-        order.creationDate = dayjs(order.creationDate).format('YYYY-MM-DD HH:mm:ss')
-        orderData.value = order
-        student.value = order.student
+        const studentData = data
+        studentData.orders.forEach((item: any) => {
+          item.creationDate = dayjs(item.creationDate.creationDate).format('YYYY-MM-DD HH:mm:ss')
+        })
+        orderData.value = studentData.orders
+        student.value.chineseName = studentData.chineseName
+        student.value.phoneNumber = studentData.phoneNumber
+        student.value.comment = studentData.comment
       }
     }
   },
@@ -98,24 +93,7 @@ const emit = defineEmits(['close'])
 
 // 关闭
 const close = () => {
-  orderData.value = {
-    id: '',
-    creationDate: '',
-    student: {
-      chineseName: '',
-      comment: '',
-      phoneNumber: ''
-    },
-    items: [
-      {
-        productName: '',
-        unitPrice: 0,
-        quantity: 0,
-        itemPrice: 0
-      }
-    ],
-    totalPrice: 0
-  }
+  orderData.value = []
   emit('close')
 }
 
