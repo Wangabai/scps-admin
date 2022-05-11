@@ -5,7 +5,7 @@
         <div class="title">
           <el-form-item label="" style="text-align: center"><p>梓灿教育售货单</p></el-form-item>
         </div>
-        <div v-for="(order, index) in orderData" :key="index">
+        <div v-for="(order, index) in orderData" :key="index" class="order-big-item">
           <el-form-item label="订单号：">{{ order.id }}</el-form-item>
           <el-form-item label="下单时间："
             ><span style="font-size: 10px">{{ order.creationDate }}</span></el-form-item
@@ -112,6 +112,11 @@ const printObj = {
   .print {
     margin-bottom: 50px;
     padding: 10px 15px;
+    .order-big-item {
+      border-bottom: 2px dashed #000;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
     .el-form-item {
       align-items: center;
       line-height: 20px;
