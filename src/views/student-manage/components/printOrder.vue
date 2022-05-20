@@ -1,5 +1,11 @@
 <template>
-  <el-dialog title="打印" :model-value="props.isShow" width="400px">
+  <el-dialog
+    title="打印"
+    :model-value="props.isShow"
+    width="400px"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form class="order">
       <div class="print" id="order">
         <div class="title">
@@ -29,9 +35,11 @@
               }}
             </p>
           </div>
-          <el-form-item label="总价">{{ order.totalPrice }}元</el-form-item>
+          <el-form-item label="总价：">{{ order.totalPrice }}元</el-form-item>
         </div>
-
+        <div>
+          <el-form-item label="订单总金额：">{{ allPrice }}元</el-form-item>
+        </div>
         <div class="footer">
           <el-form-item label="" style="text-align: center"><p>__________________</p></el-form-item>
         </div>
@@ -67,15 +75,20 @@ const student = ref({
 })
 const orderData = ref<dataInterface[]>([])
 
+// 订单总金额
+const allPrice = ref<number>(0)
+
 watch(
   () => props.isShow,
   async (val: boolean) => {
     if (val && props.id) {
       const { code, data } = await studentDetail(props.id)
       if (code === 200) {
+        allPrice.value = 0
         const studentData = data
         studentData.orders.forEach((item: any) => {
           item.creationDate = dayjs(item.creationDate.creationDate).format('YYYY-MM-DD HH:mm:ss')
+          allPrice.value += item.totalPrice
         })
         orderData.value = studentData.orders
         student.value.chineseName = studentData.chineseName
@@ -93,6 +106,7 @@ const emit = defineEmits(['close'])
 
 // 关闭
 const close = () => {
+  allPrice.value = 0
   orderData.value = []
   emit('close')
 }
@@ -107,7 +121,7 @@ const printObj = {
 </script>
 <style lang="scss" scoped>
 .order::v-deep {
-  max-height: 500px;
+  max-height: 400px;
   overflow: auto;
   .print {
     margin-bottom: 50px;

@@ -1,24 +1,32 @@
 <template>
-  <el-dialog title="打印" :model-value="props.isShow" width="400px" id="order">
+  <el-dialog
+    title="打印"
+    :model-value="props.isShow"
+    width="400px"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form class="order">
-      <div class="title">
-        <el-form-item label="" style="text-align: center"><p>梓灿教育售货单</p></el-form-item>
-      </div>
-      <table-comp :data="tableData" :col-configs="theadName" :isShowCheckBox="false">
-        <template v-slot:chineseName>
-          <el-table-column label="姓名" width="70">
-            <template v-slot="{ row }">
-              <span>{{ row.student.chineseName }}</span>
-            </template>
-          </el-table-column>
-        </template>
-      </table-comp>
-      <el-form-item label="总金额" style="float: right; margin-top: 5px"
-        >{{ sumPrice }}元</el-form-item
-      >
+      <div id="order">
+        <div class="title">
+          <el-form-item label="" style="text-align: center"><p>梓灿教育售货单</p></el-form-item>
+        </div>
+        <table-comp :data="tableData" :col-configs="theadName" :isShowCheckBox="false">
+          <template v-slot:chineseName>
+            <el-table-column label="姓名" width="70">
+              <template v-slot="{ row }">
+                <span>{{ row.student.chineseName }}</span>
+              </template>
+            </el-table-column>
+          </template>
+        </table-comp>
+        <el-form-item label="总金额" style="float: right; margin-top: 5px"
+          >{{ sumPrice }}元</el-form-item
+        >
 
-      <div class="footer">
-        <el-form-item label="" style="text-align: center"><p>__________________</p></el-form-item>
+        <div class="footer">
+          <el-form-item label="" style="text-align: center"><p>__________________</p></el-form-item>
+        </div>
       </div>
     </el-form>
     <template #footer>
@@ -63,11 +71,11 @@ watch(
   () => props.isShow,
   async (val: boolean) => {
     if (val && props.data) {
+      sumPrice.value = 0
       tableData.value = props.data
       tableData.value.forEach((item: any) => {
         sumPrice.value += item.totalPrice
       })
-      console.log(props.data)
     }
   },
   {
@@ -79,6 +87,7 @@ const emit = defineEmits(['close'])
 
 // 关闭
 const close = () => {
+  sumPrice.value = 0
   tableData.value = []
   emit('close')
 }
@@ -93,7 +102,7 @@ const printObj = {
 </script>
 <style lang="scss" scoped>
 .order::v-deep {
-  max-height: 500px;
+  max-height: 400px;
   overflow: auto;
   .el-form-item {
     align-items: center;

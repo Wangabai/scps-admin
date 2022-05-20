@@ -1,5 +1,11 @@
 <template>
-  <el-dialog title="打印" :model-value="props.isShow" width="400px">
+  <el-dialog
+    title="打印"
+    :model-value="props.isShow"
+    width="400px"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <el-form class="order">
       <div class="print" id="order">
         <div class="title">

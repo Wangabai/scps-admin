@@ -78,6 +78,7 @@
   <btn-comp class="btn" size="medium" @click="printOrder" style="margin-top: 5px"
     >打印订单</btn-comp
   >
+  <span v-if="tableData.length > 0">{{ `列表总金额 ： ${allPrice}` }}元</span>
 
   <OrderDetail :id="orderId" :isShow="orderShow" @close="orderClose" />
   <PrintOrder :data="printData" :isShow="printShow" @close="orderClose" />
@@ -186,6 +187,7 @@ const total = ref(0)
 const pageCount = ref(0)
 const pageNum = ref(1)
 const pageSize = ref(10)
+const allPrice = ref(0)
 const getOrderList = async () => {
   const parmas = {
     page: 1,
@@ -198,11 +200,13 @@ const getOrderList = async () => {
   const { code, data } = await orderQuery(parmas)
   if (code === 200) {
     const list = data.orders
+    allPrice.value = 0
     list.forEach((item: any) => {
       item.creationDate = dayjs(item.creationDate).format('YYYY-MM-DD HH:MM:ss')
       item.completeDate = item.completeDate
         ? dayjs(item.completeDate).format('YYYY-MM-DD HH:MM:ss')
         : item.completeDate
+      allPrice.value += item.totalPrice
     })
     tableData.value = list
     total.value = data.total
@@ -222,6 +226,7 @@ const clear = () => {
   endTime.value = ''
   time.value = ['', '']
   tableData.value = []
+  allPrice.value = 0
 }
 
 // 订单详情

@@ -51,6 +51,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['change', 'blur', 'focus'])
 
 const value = ref<string[]>()
+
 watch(
   () => props.hval,
   (val) => {
@@ -58,6 +59,7 @@ watch(
   },
   { immediate: true }
 )
+
 const change = () => {
   if (value.value) {
     emit('change', {

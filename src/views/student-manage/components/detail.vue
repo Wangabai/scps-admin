@@ -117,6 +117,7 @@ const getStudentDetail = async () => {
   if (code === 200) tableData.value = data
   const order = tableData.value.orders
   if (order) {
+    noPaySum.value = 0
     order.forEach((item: any) => {
       noPaySum.value += item.totalPrice
     })
